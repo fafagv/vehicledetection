@@ -1,0 +1,102 @@
+# DVC pipeline: data -> train -> validate -> export, wired to the same
+# composition roots (train.py/val.py/export.py) a human runs directly --
+# `dvc repro` just invokes them with parameters pinned from params.yaml,
+# so there is exactly one training/validation/export code path, not a
+# separate "DVC version" and "manual version" to keep in sync.
+#
+# One-time setup (not part of this file -- these are commands, not config):
+#   dvc init
+#   dvc remote add -d storage <your-remote-url>       # S3/GCS/Azure/SSH/local
+#   dvc add data/vehicles                              # start tracking the raw dataset
+#   git add data/vehicles.dvc dvc.yaml params.yaml .dvc/config
+#
+# Run the whole pipeline (only re-runs stages whose deps/params changed):
+#   dvc repro
+#
+# Sweep a param via DVC experiments (complements Hydra's own --multirun
+# for train.py/val.py -- use whichever fits the workflow: `dvc exp run`
+# for a tracked, comparable experiment; `--multirun` for a quick local sweep):
+#   dvc exp run --set-param train.epochs=50
+
+stages:
+  prepare_data:
+    cmd: python scripts/prepare_dataset.py --raw-dir data/raw --output-dir data/vehicles
+    deps:
+      - scripts/prepare_dataset.py
+      - data/raw
+    outs:
+      - data/vehicles/images
+      - data/vehicles/labels
+      - data/vehicles/data.yaml
+
+  train:
+    cmd: >-
+      python train.py
+      dataset_identifier=vehicles/data.yaml
+      base_weights_identifier=${train.base_weights_identifier}
+      epochs=${train.epochs}
+      image_size=${train.image_size}
+      batch_size=${train.batch_size}
+    deps:
+      - train.py
+      - src/pipelines/use_cases.py
+      - src/models/yolo_adapter.py
+      - src/data/repositories.py
+      - configs/train.yaml
+      - data/vehicles/images
+      - data/vehicles/labels
+      - data/vehicles/data.yaml
+    params:
+      - train.epochs
+      - train.image_size
+      - train.batch_size
+      - train.base_weights_identifier
+    outs:
+      - runs/train/train/weights/best.pt
+
+  validate:
+    cmd: >-
+      python val.py
+      images_dir=data/vehicles/val/images
+      labels_dir=data/vehicles/val/labels
+      weights=runs/train/train/weights/best.pt
+      conf_threshold=${val.conf_threshold}
+      iou_threshold=${val.iou_threshold}
+      map_iou_threshold=${val.map_iou_threshold}
+    deps:
+      - val.py
+      - src/pipelines/use_cases.py
+      - src/evaluation/detection_metrics.py
+      - src/data/yolo_label_reader.py
+      - configs/val.yaml
+      - runs/train/train/weights/best.pt
+      - data/vehicles/val/images
+      - data/vehicles/val/labels
+    params:
+      - val.conf_threshold
+      - val.iou_threshold
+      - val.map_iou_threshold
+    metrics:
+      - runs/val/eval/evaluation_report.json:
+          cache: false
+
+  export:
+    cmd: >-
+      python export.py
+      --weights runs/train/train/weights/best.pt
+      --format ${export.format}
+    deps:
+      - export.py
+      - src/pipelines/use_cases.py
+      - src/pipelines/onnx_benchmark.py
+      - src/models/yolo_adapter.py
+      - configs/export.yaml
+      - runs/train/train/weights/best.pt
+    params:
+      - export.format
+      - export.image_size
+    outs:
+      - runs/export/export/model.onnx
+    metrics:
+      - runs/export/export/benchmark_report.json:
+          cache: false

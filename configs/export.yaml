@@ -1,0 +1,17 @@
+# Strictly-typed, hierarchical config for export.py, loaded via
+# src.config_loader.load_yaml_settings + validated against the
+# `ExportSettings` Pydantic model defined in export.py -- same config
+# strategy as detect.py (single deterministic action, no sweep need) and
+# for the same reason: see export.py's module docstring.
+weights: yolov8n.pt
+class_names: [car, motorcycle, bus, truck, bicycle]
+weights_dir: weights
+runs_dir: runs/export
+format: onnx                 # onnx | openvino | engine (TensorRT) | ... (any Ultralytics export format)
+output_filename: model.onnx
+image_size: 640
+run_name_prefix: export
+benchmark: true              # only actually benchmarks for format == "onnx" -- see ExportUseCase
+num_warmup_runs: 10
+num_benchmark_runs: 50
+extra_export_kwargs: {}

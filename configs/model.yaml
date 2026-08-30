@@ -1,0 +1,16 @@
+# Strictly-typed, hierarchical config for detect.py, loaded via
+# src.config_loader.load_yaml_settings + validated against the
+# `DetectSettings` Pydantic model defined in detect.py. This deliberately
+# uses plain Pydantic (Settings) rather than Hydra -- see detect.py's
+# module docstring for why the two composition roots in this project use
+# different config technologies on purpose.
+weights: yolov8n.pt
+class_names: [car, motorcycle, bus, truck, bicycle]
+weights_dir: weights
+runs_dir: runs/detect
+conf_threshold: 0.25
+iou_threshold: 0.45
+source: data/samples
+save_results: true
+run_name_prefix: exp
+max_frames: null

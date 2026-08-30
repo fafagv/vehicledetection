@@ -1,0 +1,53 @@
+# Core
+torch>=2.1.0
+torchvision>=0.16.0
+pytorch-lightning>=2.1.0
+ultralytics>=8.2.0
+
+# Config & experiment management
+hydra-core>=1.3.2
+omegaconf>=2.3.0
+mlflow>=2.9.0
+wandb>=0.16.0
+
+# Data / vision
+opencv-python-headless>=4.9.0
+numpy>=1.26.0
+albumentations>=1.3.1
+Pillow>=10.1.0
+scipy>=1.11.0                # Hungarian algorithm for ByteTrack association
+
+# OCR (ALPR)
+easyocr>=1.7.1                # swap for PaddleOCR if preferred; see src/models/plate_ocr.py
+
+# Vehicle attribute classification
+timm>=0.9.12                  # backbone for src/models/vehicle_classifier.py::TimmBackboneClassifier
+
+# API / serving
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-multipart>=0.0.6       # required by FastAPI's UploadFile
+
+# Dashboard
+streamlit>=1.30.0
+requests>=2.31.0              # dashboard/api_client.py's HTTP client to src/api/main.py
+
+# Export / optimization
+onnx>=1.15.0
+onnxruntime>=1.16.3
+onnxsim>=0.4.35
+openvino>=2024.0.0
+# tensorrt is hardware/OS specific; install separately per NVIDIA's instructions
+
+# Data versioning
+dvc>=3.40.0
+
+# Utilities
+tqdm>=4.66.1
+rich>=13.7.0
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=7.4.3

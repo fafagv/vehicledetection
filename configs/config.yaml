@@ -1,0 +1,28 @@
+# NOTE: this composition root is currently UNUSED by any script in this
+# project -- `train.py` uses `configs/train.yaml`, `detect.py` uses
+# `configs/model.yaml` (Pydantic Settings), `val.py` uses
+# `configs/val.yaml`, and `export.py` uses `configs/export.yaml`
+# (Pydantic Settings) instead, each tailored to exactly what its
+# `TrainUseCase`/`DetectUseCase`/`EvaluateUseCase`/`ExportUseCase` needs.
+# This file is kept as the composition root for a possible FUTURE
+# Lightning-based multi-task orchestration entry point (see the
+# `YoloAdapter` Lightning path docstring and `configs/logger/*.yaml`) --
+# delete it if that path is never built.
+defaults:
+  - model: yolov8_detect
+  - data: vehicles
+  - tracker: bytetrack
+  - stream: rtsp
+  - logger: mlflow
+  - _self_
+
+seed: 42
+output_dir: ${hydra:runtime.output_dir}
+experiment_name: vehicle-cv-platform
+run_name: null
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false

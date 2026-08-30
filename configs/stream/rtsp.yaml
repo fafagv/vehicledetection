@@ -1,0 +1,12 @@
+# Consumed by src.pipelines.stream_tracker.StreamTrackerConfig for
+# training-side smoke tests / batch evaluation over recorded video. The
+# live API service takes stream params per-request instead (see
+# StreamStartRequest in src/api/schemas.py) since each camera needs its
+# own source URL at runtime.
+source: rtsp://192.168.1.100:554/stream1
+conf_threshold: 0.25
+iou_threshold: 0.45
+reconnect_initial_backoff_s: 1.0
+reconnect_max_backoff_s: 30.0
+max_consecutive_read_failures: 10
+counting_line_y: null

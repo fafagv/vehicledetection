@@ -1,0 +1,4 @@
+_target_: pytorch_lightning.loggers.WandbLogger
+project: vehicle-cv-platform
+name: ${run_name}
+log_model: true

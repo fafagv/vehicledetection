@@ -1,0 +1,24 @@
+# Hydra composition root for train.py. Deliberately leaner than
+# configs/config.yaml (the Lightning-trainer composition root used by
+# src/pipelines/train.py for multi-task orchestration -- see that file's
+# docstring): TrainUseCase delegates straight to YoloAdapter.native_train,
+# so this config only needs the fields that call actually needs, not a
+# full Lightning Trainer/logger/callback tree.
+dataset_identifier: vehicles/data.yaml
+base_weights_identifier: yolov8n.pt
+class_names: [car, motorcycle, bus, truck, bicycle]
+epochs: 100
+image_size: 640
+batch_size: 16
+device: cpu
+weights_dir: weights
+datasets_dir: data
+runs_dir: runs/train
+run_name_prefix: train
+extra_train_kwargs: {}
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false

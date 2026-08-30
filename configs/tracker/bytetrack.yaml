@@ -1,0 +1,8 @@
+# Passed as **kwargs into src.tracking.bytetrack_tracker.ByteTrackTracker
+# (registered under ("tracker", "bytetrack") -- see src.core.registry).
+_target_: src.tracking.bytetrack_tracker.ByteTrackTracker
+track_thresh: 0.5
+low_thresh: 0.1
+match_thresh: 0.8
+track_buffer_frames: 30
+min_hits_to_confirm: 3

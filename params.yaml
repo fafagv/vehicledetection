@@ -1,0 +1,20 @@
+# DVC pipeline parameters -- tracked by `dvc.yaml` stages so `dvc repro`
+# knows to re-run a stage when a value here changes, and `dvc exp` can
+# sweep over them. These mirror (a subset of) configs/train.yaml,
+# configs/val.yaml, configs/export.yaml -- DVC drives *which* config
+# values matter for reproducibility/caching; the full config files remain
+# the single source of truth for every other field.
+train:
+  epochs: 100
+  image_size: 640
+  batch_size: 16
+  base_weights_identifier: yolov8n.pt
+
+val:
+  conf_threshold: 0.25
+  iou_threshold: 0.45
+  map_iou_threshold: 0.5
+
+export:
+  format: onnx
+  image_size: 640

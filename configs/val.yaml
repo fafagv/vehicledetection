@@ -1,0 +1,22 @@
+# Hydra composition root for val.py. Hydra (rather than Pydantic
+# Settings, unlike detect.py/export.py) specifically because sweeping
+# confidence/IoU thresholds across a `--multirun` to build a
+# precision-recall curve is a genuinely common validation workflow --
+# see val.py's module docstring.
+images_dir: data/vehicles/val/images
+labels_dir: data/vehicles/val/labels
+weights: yolov8n.pt
+class_names: [car, motorcycle, bus, truck, bicycle]
+weights_dir: weights
+runs_dir: runs/val
+conf_threshold: 0.25
+iou_threshold: 0.45
+map_iou_threshold: 0.5
+run_name_prefix: eval
+save_report: true
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false

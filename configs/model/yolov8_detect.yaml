@@ -1,0 +1,19 @@
+# Consumed WHOLE by src.models.yolo_adapter.YoloAdapter(model_cfg) -- see
+# that file's docstring for why this is looked up as a plain config
+# object rather than via a Hydra `_target_` (same rationale as the
+# generic cv_framework baseline: BaseTaskModel-style adapters take one
+# config object, not one constructor arg per key).
+task: detect
+weights: yolov8n.pt              # COCO-pretrained; swap for a custom .pt/.yaml to train from scratch
+image_size: 640
+num_classes: ${data.num_classes}
+class_names: ${data.class_names}
+optimizer:
+  _target_: torch.optim.SGD
+  lr: 1.0e-2
+  momentum: 0.937
+  weight_decay: 5.0e-4
+scheduler:
+  _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+  T_max: 100
+  eta_min: 1.0e-5

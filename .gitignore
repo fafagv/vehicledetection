@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+outputs/
+mlruns/
+exported/
+data/
+wandb/
+*.pt
+*.onnx
+*.engine
+.env
+.dvc/cache
+*.egg-info/
+.pytest_cache/
+.DS_Store
