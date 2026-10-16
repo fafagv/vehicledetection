@@ -157,31 +157,7 @@ benchmarking path inside `benchmark_onnx_model` (the `ExportUseCase`
 *orchestration* around it is verified; the function itself needs a real
 onnxruntime session against a real exported model).
 
-## Project layout
 
-See the full tree in the original response. Implemented so far:
-
-```
-src/core/           base_model.py, registry.py, types.py, exceptions.py, repositories.py   ✅ implemented + tested
-src/models/         yolo_adapter.py                                        ✅ implemented (untested)
-                    plate_ocr.py                                           ✅ implemented (Haar locator tested; EasyOCR untested)
-                    vehicle_classifier.py                                  ✅ implemented (color classifier tested; timm untested)
-src/tracking/       base_tracker.py, bytetrack_tracker.py                  ✅ implemented + tested
-                    botsort_tracker.py                                     ✅ implemented (Re-ID branch is an extension point)
-                    speed_estimator.py                                     ✅ implemented + tested
-src/pipelines/      stream_tracker.py                                      ✅ implemented (untested)
-                    use_cases.py (Detect/Train/Evaluate/Export)            ✅ implemented + tested
-                    onnx_benchmark.py                                      ✅ implemented (orchestration tested; real onnxruntime path untested)
-src/evaluation/     detection_metrics.py                                   ✅ implemented + tested
-src/data/           repositories.py, yolo_label_reader.py                  ✅ implemented + tested
-                    datasets.py, transforms.py (Lightning DataModule path) ⏳ next step
-src/api/            main.py, schemas.py, dependencies.py                   ✅ implemented (untested)
-detect.py / train.py / val.py / export.py                                  ✅ implemented (use-case layer tested; composition roots untested)
-scripts/prepare_dataset.py                                                 ✅ implemented + tested
-dvc.yaml, params.yaml                                                       ✅ implemented
-dashboard/app.py                                                           ✅ implemented (untested -- imports streamlit)
-dashboard/api_client.py                                                    ✅ implemented + tested
-```
 
 ## Quickstart
 
